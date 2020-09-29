@@ -3,6 +3,7 @@ Functions created for plotting
 """
 from potentialSolver.airfoil import Airfoil
 import matplotlib.pyplot as plt
+import numpy as np
 
 def plot_airfoil(airfoil):
     # plot for test
@@ -16,6 +17,20 @@ def plot_airfoil(airfoil):
     plt.show()
     return
 
-filename='NACA2414.txt'
-data=Airfoil(25,1,'NACA2414.txt')
-plot_airfoil(data)
+
+def plot_dcp(airfoil):
+
+    # retrieve x-position of collocation point
+    xcol = airfoil.datafile[2, :-1]
+
+    # retrieve chord length
+    chord_length = np.cumsum(airfoil.datafile[-1, :-1])
+
+    # compute x/c
+    x_per_c = xcol / chord_length
+
+    fig, ax = plt.subplots(1, 1)
+
+    ax.plot(x_per_c, airfoil.results[-1])
+
+    return fig, ax
