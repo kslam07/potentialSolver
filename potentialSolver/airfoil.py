@@ -32,12 +32,12 @@ class Airfoil:
         coordinates = np.array(contents)  # Converts list to an array with the coordinates
 
         # compute end points for each panel
-        xloc, yloc = self._compute_panels(self.npanels, filename)  # Computes x and y coords for individual panels
+        xloc, yloc = self._compute_panels(filename)  # Computes x and y coords for individual panels
 
         # compute panel inclinations
         alpha = self.compute_inclination(xloc, yloc)  # computes inclination angle for panels in radians
 
-        # compute collocation point and vortex element location for each panel
+        # compute vortex element and collocation point location for each panel
         x_1, y_1, x_3, y_3 = self.compute_panelpoints(xloc, yloc)  # Returns x and y loc. for vortex and colloc. point
 
         # computee the chord length per panel
@@ -49,7 +49,7 @@ class Airfoil:
         return combined
 
 
-    def _compute_panels(self, npanels, filename):
+    def _compute_panels(self, filename):
 
         # Compute coordinates of the panels
         xloc=np.linspace(0, 1, self.npanels + 1)  # N+1 points for N panels
@@ -167,5 +167,3 @@ if __name__ == "__main__":
     testfoil.run(1, 1)
 
     plot_results(testfoil)
-
-    # plot_airfoil(testfoil)

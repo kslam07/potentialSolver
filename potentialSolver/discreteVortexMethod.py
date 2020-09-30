@@ -72,8 +72,8 @@ def compute_circulation(aoa, q_inf, airfoil_data):
     """
 
     # "copy" values from airfoil array
-    colcoords = airfoil_data[[2, 3], :-1].T
-    vorcoords = airfoil_data[[4, 5], :-1].T
+    colcoords = airfoil_data[[4, 5], :-1].T
+    vorcoords = airfoil_data[[2, 3], :-1].T
     alpha_i = airfoil_data[6, :-1]  # remove last element as it is a dummy file
 
     # compute velocity in x- and z-direction
