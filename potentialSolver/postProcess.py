@@ -7,30 +7,31 @@ import numpy as np
 
 def plot_airfoil(airfoil):
     # plot for test
-    xloc, yloc, x_1, y_1, x_3, y_3, alpha = airfoil.datafile
-    plt.scatter(x_1[:-1], y_1[:-1])
-    plt.scatter(x_3[:-1], y_3[:-1])
-    plt.plot(xloc, yloc, marker='x')
+    xloc, yloc, x_1, y_1, x_3, y_3, alpha, __ = airfoil.datafile
+    plt.scatter(x_1[:-1], y_1[:-1], label="collocation points")
+    plt.scatter(x_3[:-1], y_3[:-1], label="vortex elements")
+    plt.plot(xloc, yloc, marker='x', label="panel edges")
     plt.axis('scaled')
-    # plt.ylim(0,2*max(yloc))
+    plt.ylim(-5*max(yloc), 5*max(yloc))
     plt.grid()
+    plt.legend()
     plt.show()
     return
 
 
-def plot_dcp(airfoil):
+def plot_results(airfoil):
 
     # retrieve x-position of collocation point
-    xcol = airfoil.datafile[2, :-1]
+    xcol = airfoil.datafile[0, 1:]
 
-    # retrieve chord length
-    chord_length = np.cumsum(airfoil.datafile[-1, :-1])
+    fig, ax = plt.subplots(1, 2)
 
-    # compute x/c
-    x_per_c = xcol / chord_length
+    ax[0].plot(xcol, airfoil.results[-1], label="pressure diff.")
+    ax[1].plot(xcol, airfoil.results[-2], label="lift diff.")
 
-    fig, ax = plt.subplots(1, 1)
-
-    ax.plot(x_per_c, airfoil.results[-1])
+    ax[0].set_xlim(left=0, right=1)
+    ax[1].set_xlim(left=0, right=1)
+    ax[0].legend()
+    ax[1].legend()
 
     return fig, ax

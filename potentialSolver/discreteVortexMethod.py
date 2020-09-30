@@ -76,8 +76,8 @@ def compute_circulation(aoa, q_inf, airfoil_data):
     vorcoords = airfoil_data[[4, 5], :-1].T
     alpha_i = airfoil_data[6, :-1]  # remove last element as it is a dummy file
 
-    # compute RHS
-    u_inf, w_inf = -np.cos(aoa) * q_inf, -np.cos(aoa) * q_inf  # compute the free-stream velocity component
+    # compute velocity in x- and z-direction
+    u_inf, w_inf = np.cos(aoa) * q_inf, np.sin(aoa) * q_inf  # compute the free-stream velocity component
 
     n_vecs = normal_vector(alpha_i)
 

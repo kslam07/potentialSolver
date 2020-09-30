@@ -120,17 +120,22 @@ class Airfoil:
 
         return chord_length
 
-    def run(self, aoa, q_inf, density=1.225):
+    def run(self, aoa, q_inf, density=1.225, deg=True):
         """
         Run the discrete vortex panel method.
         :return: 2D array with rows containing the circulation at each panel and columns the angle of attack of the run
         :rtype: ndarray
         """
 
-        circ_arr = compute_circulation(aoa, q_inf, self.datafile)
+        if deg:
+            _aoa = np.radians(aoa)
+        else:
+            _aoa = aoa
+
+        circ_arr = compute_circulation(_aoa, q_inf, self.datafile)
 
         # compute secondary parameters
-        results = self.compute_parameters(self.datafile, circ_arr, q_inf)
+        results = self.compute_parameters(self.datafile, circ_arr, q_inf, density)
 
         self.results = results
 
@@ -151,3 +156,16 @@ class Airfoil:
 
         return np.array([circ_arr, lift_diff, pressure_diff])
 
+
+if __name__ == "__main__":
+    from potentialSolver.postProcess import plot_results, plot_airfoil
+
+    params = {"npanels": 5, "eps": 1, "datafile": "naca0010.txt"}
+
+    testfoil = Airfoil(**params)
+
+    testfoil.run(1, 1)
+
+    plot_results(testfoil)
+
+    # plot_airfoil(testfoil)
