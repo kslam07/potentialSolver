@@ -4,12 +4,14 @@ from potentialSolver.discreteVortexMethod import compute_circulation
 
 class Airfoil:
 
-    def __init__(self, npanels, eps, datafile):
+    def __init__(self, npanels, eps, datafile, airfoil_type):
 
         self.npanels = npanels
         self.eps = eps
         self.datapath = Path(__file__).parent.parent / 'data'
+        self.airfoil_type = airfoil_type
         self.datafile = self.generate_airfoil(datafile)
+
 
 
     def generate_airfoil(self, filename):
@@ -32,7 +34,7 @@ class Airfoil:
         coordinates = np.array(contents)  # Converts list to an array with the coordinates
 
         # compute end points for each panel
-        xloc, yloc = self._compute_panels(filename)  # Computes x and y coords for individual panels
+        xloc, yloc = self._compute_panels(filename, self.airfoil_type)  # Computes x and y coords for individual panels
 
         # compute panel inclinations
         alpha = self.compute_inclination(xloc, yloc)  # computes inclination angle for panels in radians
@@ -49,7 +51,7 @@ class Airfoil:
         return combined
 
 
-    def _compute_panels(self, filename):
+    def _compute_panels(self, filename, airfoil_type):
 
         # Compute coordinates of the panels
         xloc=np.linspace(0, 1, self.npanels + 1)  # N+1 points for N panels
@@ -57,14 +59,19 @@ class Airfoil:
         # Check if airfoil is cambered
         yloc = []
 
-        if int(filename[4:8][0]) == 0:  # Checks if airfoil is symmetric
-            yloc = np.zeros(len(xloc))
-        else:
+        if airfoil_type == 'parabolic':
             for i in xloc:
-                if i < int(filename[4:8][1])/10:  # Analytical based on p criteria p=location of max camber
-                    yloc.append(self.naca_camber1(i, filename))
-                else:
-                    yloc.append(self.naca_camber2(i, filename))
+                yloc.append(self.parabolic(i))
+
+        if airfoil_type == 'naca':
+            if int(filename[4:8][0]) == 0:  # Checks if airfoil is symmetric
+                yloc = np.zeros(len(xloc))
+            else:
+                for i in xloc:
+                    if i < int(filename[4:8][1])/10:  # Analytical based on p criteria p=location of max camber
+                        yloc.append(self.naca_camber1(i, filename))
+                    else:
+                        yloc.append(self.naca_camber2(i, filename))
 
         return xloc, np.array(yloc)
 
@@ -81,6 +88,9 @@ class Airfoil:
         m = int(filename[4:8][0])/100  # m is the maximum camber
         p = int(filename[4:8][1])/10  # p is the position of maximum camber
         return m/(1-p)**2*((1-2*p)+2*p*x-x**2)
+
+    def parabolic(self, xloc):
+        return 4*self.eps*xloc*(1-xloc)
 
     def compute_inclination(self, x_panel, y_panel):
         """
@@ -150,9 +160,9 @@ class Airfoil:
         """
 
         # compute chord length per panel
-
+        p_dyn = 0.5 * density * q_inf**2
         lift_diff = density * q_inf * circ_arr
-        pressure_diff = density * q_inf * circ_arr / airfoil_data[-1, :-1]  # last row airfoil data holds the chord len
+        pressure_diff = density * q_inf * circ_arr / airfoil_data[-1, :-1] / p_dyn # last row airfoil data holds the chord len
 
         return np.array([circ_arr, lift_diff, pressure_diff])
 
@@ -160,10 +170,10 @@ class Airfoil:
 if __name__ == "__main__":
     from potentialSolver.postProcess import plot_results, plot_airfoil
 
-    params = {"npanels": 5, "eps": 1, "datafile": "naca0010.txt"}
+    params = {"npanels": 20, "eps": 0.1, "datafile": "naca0010.txt", "airfoil_type": "parabolic"}
 
     testfoil = Airfoil(**params)
 
-    testfoil.run(1, 1)
+    testfoil.run(10, 1)
 
     plot_results(testfoil)

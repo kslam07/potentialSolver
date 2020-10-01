@@ -22,7 +22,7 @@ def plot_airfoil(airfoil):
 def plot_results(airfoil):
 
     # retrieve x-position of collocation point
-    xcol = airfoil.datafile[4, 1:]
+    xcol = airfoil.datafile[4, :-1]
 
     fig, ax = plt.subplots(1, 2)
 
