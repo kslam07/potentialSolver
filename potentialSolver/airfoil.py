@@ -48,7 +48,7 @@ class Airfoil:
         # return xloc, yloc
 
         combined = np.array([xloc, yloc, x_1, y_1, x_3, y_3, alpha, chord_length])  # combine everything into a list
-        return combined
+        return combined  # x,y panel, x,y vortex, x,y collocation point, alpha, panel length
 
 
     def _compute_panels(self, filename, airfoil_type):
@@ -170,7 +170,7 @@ class Airfoil:
 if __name__ == "__main__":
     from potentialSolver.postProcess import plot_results, plot_airfoil
 
-    params = {"npanels": 20, "eps": 0.1, "datafile": "naca0010.txt", "airfoil_type": "parabolic"}
+    params = {"npanels": 200, "eps": 0.1, "datafile": "NACA2414.txt", "airfoil_type": "parabolic"}
 
     testfoil = Airfoil(**params)
 
