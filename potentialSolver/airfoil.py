@@ -2,6 +2,7 @@ from pathlib import Path
 import numpy as np
 from potentialSolver.discreteVortexMethod import compute_circulation
 
+
 class Airfoil:
 
     def __init__(self, npanels, eps, datafile, airfoil_type):
@@ -11,8 +12,6 @@ class Airfoil:
         self.datapath = Path(__file__).parent.parent / 'data'
         self.airfoil_type = airfoil_type
         self.datafile = self.generate_airfoil(datafile)
-
-
 
     def generate_airfoil(self, filename):
         """
@@ -50,11 +49,10 @@ class Airfoil:
         combined = np.array([xloc, yloc, x_1, y_1, x_3, y_3, alpha, chord_length])  # combine everything into a list
         return combined
 
-
     def _compute_panels(self, filename, airfoil_type):
 
         # Compute coordinates of the panels
-        xloc=np.linspace(0, 1, self.npanels + 1)  # N+1 points for N panels
+        xloc = np.linspace(0, 1, self.npanels + 1)  # N+1 points for N panels
 
         # Check if airfoil is cambered
         yloc = []
@@ -68,7 +66,7 @@ class Airfoil:
                 yloc = np.zeros(len(xloc))
             else:
                 for i in xloc:
-                    if i < int(filename[4:8][1])/10:  # Analytical based on p criteria p=location of max camber
+                    if i < int(filename[4:8][1]) / 10:  # Analytical based on p criteria p=location of max camber
                         yloc.append(self.naca_camber1(i, filename))
                     else:
                         yloc.append(self.naca_camber2(i, filename))
@@ -79,18 +77,18 @@ class Airfoil:
         # equation if x<p
         # m is the first of the four digits
         # p is the second of the four digits
-        m = int(filename[4:8][0])/100  # m is the maximum camber
-        p = int(filename[4:8][1])/10  # p is the position of maximum camber
-        return m/p**2 * (2*p*x-x**2)
+        m = int(filename[4:8][0]) / 100  # m is the maximum camber
+        p = int(filename[4:8][1]) / 10  # p is the position of maximum camber
+        return m / p ** 2 * (2 * p * x - x ** 2)
 
     def naca_camber2(self, x, filename):
         # Equation if x>p
-        m = int(filename[4:8][0])/100  # m is the maximum camber
-        p = int(filename[4:8][1])/10  # p is the position of maximum camber
-        return m/(1-p)**2*((1-2*p)+2*p*x-x**2)
+        m = int(filename[4:8][0]) / 100  # m is the maximum camber
+        p = int(filename[4:8][1]) / 10  # p is the position of maximum camber
+        return m / (1 - p) ** 2 * ((1 - 2 * p) + 2 * p * x - x ** 2)
 
     def parabolic(self, xloc):
-        return 4*self.eps*xloc*(1-xloc)
+        return 4 * self.eps * xloc * (1 - xloc)
 
     def compute_inclination(self, x_panel, y_panel):
         """
@@ -100,7 +98,7 @@ class Airfoil:
         """
         x_roll = np.roll(x_panel, -1)  # Shift indices one to the left
         y_roll = np.roll(y_panel, -1)
-        alpha = np.arctan((y_panel-y_roll)/(x_roll-x_panel))  # The last value is zero and should not be used
+        alpha = np.arctan((y_panel - y_roll) / (x_roll - x_panel))  # The last value is zero and should not be used
         return alpha
 
     def compute_panelpoints(self, x_panel, y_panel):
@@ -113,11 +111,11 @@ class Airfoil:
         x_roll = np.roll(x_panel, -1)
         y_roll = np.roll(y_panel, -1)
 
-        x_1 = x_panel * (3/4) + x_roll * (1/4)
-        y_1 = y_panel * (3/4) + y_roll * (1/4)
+        x_1 = x_panel * (3 / 4) + x_roll * (1 / 4)
+        y_1 = y_panel * (3 / 4) + y_roll * (1 / 4)
 
-        x_3 = x_panel * (1/4) + x_roll * (3/4)
-        y_3 = y_panel * (1/4) + y_roll * (3/4)
+        x_3 = x_panel * (1 / 4) + x_roll * (3 / 4)
+        y_3 = y_panel * (1 / 4) + y_roll * (3 / 4)
 
         return x_1, y_1, x_3, y_3
 
@@ -126,7 +124,7 @@ class Airfoil:
         x_roll = np.roll(xpanel, -1)
         y_roll = np.roll(ypanel, -1)
 
-        chord_length = np.sqrt((xpanel - x_roll)**2 + (ypanel - y_roll)**2)
+        chord_length = np.sqrt((xpanel - x_roll) ** 2 + (ypanel - y_roll) ** 2)
 
         return chord_length
 
@@ -149,6 +147,7 @@ class Airfoil:
 
         self.results = results
 
+        return results
 
     def compute_parameters(self, airfoil_data, circ_arr, q_inf, density=1.225):
         """
@@ -160,11 +159,11 @@ class Airfoil:
         """
 
         # compute chord length per panel
-        p_dyn = 0.5 * density * q_inf**2
-        lift_diff = density * q_inf * circ_arr
-        pressure_diff = density * q_inf * circ_arr / airfoil_data[-1, :-1] / p_dyn # last row airfoil data holds the chord len
+        p_dyn = 0.5 * density * q_inf ** 2
+        dcl = density * q_inf * circ_arr / p_dyn
+        dcp = density * q_inf * circ_arr / airfoil_data[-1, :-1] / p_dyn  # last row airfoil data holds the chord len
 
-        return np.array([circ_arr, lift_diff, pressure_diff])
+        return np.array([circ_arr, dcl, dcp])
 
 
 if __name__ == "__main__":
