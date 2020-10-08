@@ -55,3 +55,4 @@ ax_dcp[0].set_xlabel(r"$\alpha$ [$^\circ$]")
 ax_dcp[0].set_ylabel(r"$C_{l}$ [-]")
 
 fig_dcp.suptitle(r"Comparison between NACA0010 and NACA2414")
+fig_dcp.show()
