@@ -5,14 +5,15 @@ Created on Thu Oct  8 10:54:46 2020
 @author: Thomas Verduyn
 """
 
-import numpy as np
+from pathlib import Path
 import matplotlib.pyplot as plt
+import numpy as np
 
 def reader(filename):
     xc = []
     cp0 = []
     cp5 = []
-    with open(filename) as f:
+    with open(Path(__file__).parent.parent / 'data' / filename) as f:
         contents = f.readlines()[1:]
     for index, line in enumerate(contents):  # Converts string into floats for x and y location of airfoil
         contents[index] = line.strip('\n').split()
