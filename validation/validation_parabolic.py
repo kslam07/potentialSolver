@@ -29,7 +29,7 @@ def plot_results(airfoil, aoa, eps):
 aoa = 10
 eps = 0.1
 
-params = {"npanels": 200, "eps": 0.1, "datafile": "naca0010.txt", "airfoil_type": "parabolic"}
+params = {"npanels": 20, "eps": 0.1, "datafile": "naca0010.txt", "airfoil_type": "parabolic"}
 parabolic = Airfoil(**params)
 parabolic.run(aoa, 1)
 
