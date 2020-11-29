@@ -33,5 +33,11 @@ def plot_results(airfoil):
     ax[1].set_xlim(left=0, right=1)
     ax[0].legend()
     ax[1].legend()
+    ax[0].set_title(r'$\Delta$P over x/c')
+    ax[1].set_title(r'$\Delta$L over x/c')
+    ax[0].set_xlabel('x/c')
+    ax[0].set_ylabel(r'$\Delta$P')
+    ax[1].set_xlabel('x/c')
+    ax[1].set_ylabel(r'$\Delta$L')
 
     return fig, ax
