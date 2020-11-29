@@ -103,13 +103,3 @@ def compute_circulation(aoa, q_inf, airfoil_data):
     circ_arr = np.linalg.inv(coeff_infl) @ rhs_arr  # A^(-1) RHS
 
     return circ_arr
-
-
-if __name__ == "__main__":
-    test_array = np.array([
-        [0.0, 0.0, 0.0],
-        [0.01, 0.1, 0.2],
-        [0.01, 0.1, 0.2],
-        [0.01, 0.1, 0.2],
-        [0.01, 0.1, 0.2]
-    ])
