@@ -3,7 +3,7 @@ from potentialSolver.airfoil import Airfoil
 import numpy as np
 import matplotlib.pyplot as plt
 
-aoa_arr = np.arange(0, 5.5, 0.5)
+aoa_arr = np.arange(0, 10.5, 0.5)
 
 npanels = 50  # number of panels
 density = 1.225  # density [kg/m3]
@@ -33,26 +33,30 @@ results_0010 = results_0010[1:]
 cla_0010 = np.sum(results_0010[1::3], axis=1)
 cla_2414 = np.sum(results_2414[1::3], axis=1)
 
-# for 0 deg AoA | first row: circulation; second row: lift difference, third row: pressure difference
+fig_dcp, ax_dcp = plt.subplots(1, 3, dpi=150)
 
-# for aoa, result_2414, result_0010 in zip(aoa_arr, results_2414[::3], results_0010[::3]):
-#     ax_dcp.plot(naca0010.datafile[4, :-1], result_0010, label=r"NACA0010 - {}".format(aoa), c='r')  # xcol vs dCp
-#     ax_dcp.plot(naca2414.datafile[4, :-1], result_2414, label=r"NACA2414 - {}".format(aoa), c='b')  # xcol vs dCp
-fig_dcp, ax_dcp = plt.subplots(1, 2)
+aoa_i = 5
 
-# TODO: fix fontsize
-ax_dcp[0].plot(naca0010.datafile[4, :-1], results_0010[-1], label=r"NACA0010 - $5{^\circ}$", c='r')  # xcol vs dCp
-ax_dcp[0].plot(naca2414.datafile[4, :-1], results_2414[-1], label=r"NACA2414 - $5{^\circ}$", c='b')  # xcol vs dCp
+ax_dcp[0].plot(naca0010.datafile[4, :-1], results_0010[aoa_i*6-1, :], label=r"NACA0010 ", c='r')  # xcol vs dCp
+ax_dcp[0].plot(naca2414.datafile[4, :-1], results_2414[aoa_i*6-1, :], label=r"NACA2414", c='b')  # xcol vs dCp
 ax_dcp[0].legend()
-ax_dcp[0].set_title(r"$\Delta C_{p}$ comparison between NACA0010 and NACA2414 at $\alpha$ = $5^\circ$")
+ax_dcp[0].set_title(r"$\Delta C_{p}$ at $\alpha$ = $5^\circ$")
 ax_dcp[0].set_xlabel("x/c [-]")
 ax_dcp[0].set_ylabel(r"$\Delta C_{p}$ [-]")
+ax_dcp[0].grid()
 
-ax_dcp[1].plot(aoa_arr, cla_0010, label=r"NACA0010")
-ax_dcp[1].plot(aoa_arr, cla_2414, label=r"NACA2414")
-ax_dcp[1].legend()
-ax_dcp[0].set_xlabel(r"$\alpha$ [$^\circ$]")
-ax_dcp[0].set_ylabel(r"$C_{l}$ [-]")
+ax_dcp[1].plot(naca0010.datafile[4, :-1], results_0010[-1], label=r"NACA0010", c='r')  # xcol vs dCp
+ax_dcp[1].plot(naca2414.datafile[4, :-1], results_2414[-1], label=r"NACA2414", c='b')  # xcol vs dCp
+ax_dcp[1].set_title(r"$\Delta C_{p}$ at $\alpha$ = $10^\circ$")
+ax_dcp[1].set_xlabel("x/c [-]")
+ax_dcp[1].set_ylabel(r"$\Delta C_{p}$ [-]")
+ax_dcp[1].grid()
 
-fig_dcp.suptitle(r"Comparison between NACA0010 and NACA2414")
-fig_dcp.show()
+ax_dcp[2].plot(aoa_arr, cla_0010, label=r"NACA0010", c='r')
+ax_dcp[2].plot(aoa_arr, cla_2414, label=r"NACA2414", c='b')
+ax_dcp[2].set_title(r"$C_{L_{\alpha}}$ vs. AoA")
+ax_dcp[2].set_xlabel(r"$\alpha$ [$^\circ$]")
+ax_dcp[2].set_ylabel(r"$C_{l}$ [-]")
+ax_dcp[2].grid()
+
+#fig_dcp.suptitle(r"Comparison between NACA0010 and NACA2414")
