@@ -1,9 +1,7 @@
 """
 Functions created for plotting
 """
-from potentialSolver.airfoil import Airfoil
 import matplotlib.pyplot as plt
-import numpy as np
 
 def plot_airfoil(airfoil):
     # plot for test

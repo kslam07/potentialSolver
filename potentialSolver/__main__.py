@@ -1,3 +1,0 @@
-"""
-Script to run simulations
-"""

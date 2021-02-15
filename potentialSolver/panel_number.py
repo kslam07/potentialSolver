@@ -1,4 +1,4 @@
-from potentialSolver.airfoil import Airfoil
+from potentialSolver.potentialSolver.airfoil import Airfoil
 import numpy as np
 import matplotlib.pyplot as plt
 
